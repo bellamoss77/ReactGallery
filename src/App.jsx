@@ -1,35 +1,49 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+//import React from "react";
+import ImageGallery from 'react-image-gallery';
+import 'react-image-gallery/styles/css/image-gallery.css';
+
+import { images } from './gallery';
+import { useState } from 'react';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [likedImages, setLikedImages] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+  const handleLike = () => {
+    const image = images[currentIndex];
+    if (!likedImages.some(likedImage => likedImage.id === image.id)) {
+      setLikedImages([...likedImages, image]);
+    }
+  };
+
+  const onSlide = (index) => {
+    setCurrentIndex(index);
+  }
+
+    return (
+        <div className="App">
+            <ImageGallery items={images} showPlayButton={true} showFullscreenButton={true} slideDuration={500} onSlide={onSlide} />
+            <div style={{ position: 'relative' }}>
+              {images.map((image, index) => (
+                <button
+                key={index}
+                className='like-button'
+                onClick={handleLike}
+                >
+                  <i className='fa fa-heart'></i>
+                </button>
+              ))}
+            </div>
+
+            <select>
+                {likedImages.map((image, index) => (
+                  <option key={index} value={image.title}>
+                    {image.title}
+                  </option>
+                ))}
+            </select>
+        </div>
+    );
 }
 
-export default App
+export default App;
